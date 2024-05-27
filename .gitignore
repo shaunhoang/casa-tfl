@@ -159,3 +159,8 @@ compile/main.lot
 compile/main.toc
 compile/main.synctex.gz
 *.fdb_latexmk
+*.aux
+*.bcf
+*.fls
+*.xml
+*.bbl-SAVE-ERROR

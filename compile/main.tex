@@ -9,7 +9,7 @@
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\headheight=15pt 
+\headheight=15pt  
 % \fancyhead{}
 % \fancyfoot{}
 % \fancyfoot[LE,RO]{\thepage}
@@ -18,17 +18,12 @@
 % \renewcommand{\headrulewidth}{0pt}
 % \renewcommand{\footrulewidth}{0.1pt}
 
-\title{
-    {Thesis Title}\\
-    {\large Bartlett Centre for Advanced Spatial Analytics}\\
-    {\large University College London}\\
-}
-\author{The-Huan Hoang}
-\date{23 August 2024}
+\usepackage[style=authoryear,natbib=true,backend=biber]{biblatex}
+\addbibresource{dissbib.bib}
 
 \begin{document}
 
-\maketitle
+\input{titlepage}
 
 \chapter*{Abstract}
 Abstract goes here
@@ -64,4 +59,5 @@ I want to thank
 \chapter{Appendix}
 \input{chapters/appendix}
 
+\printbibliography{}
 \end{document}
