@@ -164,3 +164,4 @@ compile/main.synctex.gz
 *.fls
 *.xml
 *.bbl-SAVE-ERROR
+/code/data
