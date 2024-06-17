@@ -165,3 +165,4 @@ compile/main.synctex.gz
 *.xml
 *.bbl-SAVE-ERROR
 /code/data
+/code/cache
