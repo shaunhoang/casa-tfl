@@ -1,5 +1,4 @@
-\documentclass[12pt,twoside]{report}
-\usepackage[utf8]{inputenc}
+\documentclass[12pt, twoside]{report}
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 
@@ -9,17 +8,22 @@
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\headheight=15pt  
-% \fancyhead{}
-% \fancyfoot{}
-% \fancyfoot[LE,RO]{\thepage}
-% \fancyfoot[LO,RE]{Chapter \thechapter}
-% \fancyfoot[CO,CE]{The-Huan Hoang}
-% \renewcommand{\headrulewidth}{0pt}
-% \renewcommand{\footrulewidth}{0.1pt}
+\fancyhead{}
+
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]
+{\Huge\bfseries}
+{\thechapter.}
+{0.5em}
+{}
+
+\usepackage{geometry}
+\geometry{
+    footnotesep = 0.8cm
+}
 
 \usepackage[style=authoryear,natbib=true]{biblatex}
-\addbibresource{dissbib.bib}
+\addbibresource{dissbib.bib} 
 
 \begin{document}
 
@@ -29,10 +33,10 @@
 Abstract goes here...
 
 \chapter*{Declaration}
-I, The-Huan Hoang, declare that the work presented in this dissertation is my own. Where claims, information or findings have been derived from other authors and sources, I confirm that this has herein been indicated in writing, attributing due credit.
+I, The-Huan Hoang, declare that the work presented in this dissertation is my own. Where claims, information or findings have been derived from other authors and sources, I confirm that this has herein been indicated in writing, attributing due credit. In the spirit of fostering reproducible research, all scripts used for analysis and their outputs are made available on GitHub at \url{https://github.com/shaunhoang/tfl-dissertation}.
 
 \chapter*{Acknowledgements}
-I am grateful for my supervisor, Dr. Elsa Arcaute, whose guidance and support have been instrumental throughout the process of completing this dissertation. Her vision and insightful feedback have significantly shaped the direction of my work. I would also like to thank the invaluable support from Howard Wong, Dave Arquati, and the Public Transport Service Planning team at Transport for London. Their willingness to share expertise and real-world insights into the data science behind transport planning has greatly enriched my knowledge, as well as this research.
+I am grateful for the guidance and insightful feedback from my supervisor, Dr. Elsa Arcaute, who has shaped the direction of my work from its inception. I would also like to acknowledge the invaluable support from Howard Wong, Dave Arquati, Menno Yap, and the Public Transport Service Planning team at Transport for London. Their willingness to share expertise and real-world insights into the data science behind transport planning has greatly enriched my knowledge, as well as this research project.
 
 \tableofcontents
 
@@ -49,15 +53,16 @@ I am grateful for my supervisor, Dr. Elsa Arcaute, whose guidance and support ha
 \chapter{Methodology}
 \input{chapters/methodology}
 
-\chapter{Results}
+\chapter{Results and Discussion}
 \input{chapters/results}
 
 \chapter{Conclusion}
 \input{chapters/conclusion}
 
 \appendix
-\chapter{Appendix}
+\chapter*{Appendix}
 \input{chapters/appendix}
 
 \printbibliography{}
+
 \end{document}
