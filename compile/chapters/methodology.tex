@@ -155,14 +155,16 @@ The detailed methodology to generate the isochrones is illustrated in Figure \re
 
 
 \pagebreak[4] % Force a page break
-\section{Preprocessing: Aggregating target variables}
+\section{Data Preprocessing}
+\subsection{Aggregating target variables}
+
 
 The total numbers of passengers who arrive at a transport node or alight from a bus at a stop are the target variables for our model, used to train the model to predict the number of passengers arriving at a transport node or alighting from a bus at a given isochrone. 
 The aggregation results are illustrated in Figure \ref{fig:ptarrival}, which shows the total daily figures as well as the figures aggregated into the four time bands described earlier in order to capture the temporal variations. The total daily figures show a clear concentration of passenger arrivals in the Central London area, with the highest number of passengers arriving at transport nodes in the morning and evening time bands. The time band figures show a similar pattern, with the highest number of passengers arriving during the Midday time band (10:00-19:00). The Evening time band also shows a significant number of passengers arriving at transport nodes, while the Morning and Late time bands show lower numbers of passengers using the system, due to early hours in the day on weekends and sparser night services, respectively.
 
-\begin{figure}[!ht]
+\begin{figure}[!b]
     \centering
-    \includegraphics[width=0.75\textwidth]{pt_arrival_total.png}
+    \includegraphics[width=0.6\textwidth]{pt_arrival_total.png}
     \centering
     \includegraphics[width=\textwidth]{pt_arrival_timeband.png}
     \captionsetup{justification=centering}
@@ -170,16 +172,24 @@ The aggregation results are illustrated in Figure \ref{fig:ptarrival}, which sho
     \label{fig:ptarrival}
 \end{figure}
 
+Lastly, since the target variable has a highly right-skewed distribution, we will apply a log transformation to the target variable to normalise the distribution and improve the model's performance. The log transformation of the target variable is shown in Figure \ref{fig:rawlog}, which shows a more normal distribution of the target variable after the transformation. The log-transformed target variable will be used in the model training and evaluation process, and will be implicit from this point on.
 
-\pagebreak% Force a page break
-\section{Preprocessing: Feature engineering}
-\subsection*{Density}
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.65\textwidth]{raw-log.png}
+    \captionsetup{justification=centering}
+    \caption{Distribution of the Total arrivals as raw count (left) and log-transformed (right). Similar transformations carried out for arrivals by each of the four time bands}
+    \label{fig:rawlog}
+\end{figure}
 
-Density of POIs is one of the first feature type of interest for our model, which represents the availability of amenities or transport nodes in an area that would attract visitors to come (in our case, using public transport). We expect a linear An area with a high concetration of retail within a 15-minute walk is expected be more attractive than a similar-sized area with a low
+\subsection{Feature engineering}
+\subsubsection*{Density}
+
+Density of POIs is one of the first feature type of interest for our model, which represents the availability of amenities or transport nodes in an area that would attract visitors to come (in our case, using public transport). We expect a linear An area with a high concetration of retail within a 15-minute walk is expected be more attractive than a similar-sized area with a low 
 
 All density-related features---i.e., population, amenity POI density and transport node POI density---are formulated by aggregating their values for each spatial unit (isochrone) by type, resulting in a set of 16 features (See Figure \ref{fig:poi} in the Appendix)
 
-\subsection*{Diversity}
+\subsubsection*{Diversity}
 - Defining diversity index
 
 - Use of Shannon entropy backed by literature
@@ -188,7 +198,7 @@ All density-related features---i.e., population, amenity POI density and transpo
 % Add plots of diversity index for 3 boroughs
 
 
-\subsection*{Centrality}
+\subsubsection*{Centrality}
 - Which 3 centrality measures are used
 
 % Add plots of network
@@ -199,7 +209,7 @@ All density-related features---i.e., population, amenity POI density and transpo
 - Why not multi-Layered network
 
 
-\section{Preprocessing: Incorporating spatial lags as feature}
+\subsection{Incorporating spatial lags as feature}
 
 When working with machine learning models with data exist in a closed spatial system such as the Greater London area, it is important to consider the spatial autocorrelation in the target variables. Spatial autocorrelation refers to the phenomenon where the value of a variable at one location is correlated with the value of the same variable at nearby locations. In the context of our analysis, this means that the number of passengers arriving at a transport node or alighting from a bus at one isochrone is likely to be correlated with the number of passengers arriving at nearby isochrones. Although deep learning models' parameters and hyperparameters can be made more complex and tuned to reach a high degree of prediction accuracy without considering the spatial aspect of the dataset and can practically be considered non-parametric (i.e., not assuming the variables to have a specific distributions), accounting for potential spatial autocorrelation could reduce probability of biased outcomes even with a low-complexity and high-interpretability atchitecture, e.g. tree-based \citep{meyerImportanceSpatialPredictor2019}.
 
@@ -209,7 +219,7 @@ The existence of spatial autocorrelation in the target variables is confirmed by
     \centering
     \includegraphics[width=\textwidth]{lisa_Total.jpg}
     \captionsetup{justification=centering}
-    \caption{LISA cluster map of PT arrival volume (Total daily)}
+    \caption{LISA cluster map of PT arrival volume (Total daily)\\Global Moran's I: 0.742 (High spatial autocorrelation)}
     \label{fig:lisacluster}
 \end{figure}
 

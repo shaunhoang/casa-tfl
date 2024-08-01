@@ -167,3 +167,11 @@ compile/main.synctex.gz
 /code/data
 /code/cache
 /code/bin
+*.blg
+*.out
+*.out
+*.out
+*.out
+*.gz
+*.out
+compile/main (1).pdf
