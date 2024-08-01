@@ -1,22 +1,20 @@
-\documentclass[12pt, twoside]{report}
+\documentclass[12pt]{report}
+
 \usepackage{graphicx}
-\graphicspath{ {images/} }
+\graphicspath{{images/}}
 
 \usepackage[a4paper,width=175mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
 \usepackage{caption}
 \usepackage{subcaption}
-
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue]{hyperref}
 \usepackage{fancyhdr}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
 \pagestyle{fancy}
 \fancyhead{}
 
 \usepackage{titlesec}
-\titleformat{\chapter}[hang]
-{\Huge\bfseries}
-{\thechapter.}
-{0.5em}
-{}
-
+\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter.}{0.5em}{}
 \usepackage{geometry}
 \geometry{
     footnotesep = 0.8cm
@@ -33,10 +31,10 @@
 Abstract goes here...
 
 \chapter*{Declaration}
-I, The-Huan Hoang, declare that the work presented in this dissertation is my own. Where claims, information or findings have been derived from other authors and sources, I confirm that this has herein been indicated in writing, attributing due credit. In the spirit of fostering reproducible research, all scripts used for analysis and their outputs are made available on GitHub at \url{https://github.com/shaunhoang/tfl-dissertation}.
+I, The-Huan Hoang, declare that the work presented in this dissertation is my own. Where claims, information or findings have been derived from other authors and sources, I confirm that this has herein been indicated in writing, attributing due credit. In the spirit of fostering reproducible research, all scripts used for analysis and their outputs are made available on GitHub at \url{https://github.com/shaunhoang/casa-tfl-dissertation}.
 
 \chapter*{Acknowledgements}
-I am grateful for the guidance and insightful feedback from my supervisor, Dr. Elsa Arcaute, who has shaped the direction of my work from its inception. I would also like to acknowledge the invaluable support from Howard Wong, Dave Arquati, Menno Yap, and the Public Transport Service Planning team at Transport for London. Their willingness to share expertise and real-world insights into the data science behind transport planning has greatly enriched my knowledge, as well as this research project.
+I am grateful for the guidance and insightful feedback from my supervisor, Dr. Elsa Arcaute, who has shaped the direction of my work from its inception. I would also like to acknowledge the invaluable support from the Public Transport Service Planning team at Transport for London. Their expert advice and real-world insights into the data science behind transport planning have greatly enriched my knowledge, as well as this research project.
 
 \tableofcontents
 
@@ -60,7 +58,7 @@ I am grateful for the guidance and insightful feedback from my supervisor, Dr. E
 \input{chapters/conclusion}
 
 \appendix
-\chapter*{Appendix}
+\chapter{Appendix}
 \input{chapters/appendix}
 
 \printbibliography{}
