@@ -186,43 +186,126 @@ Lastly, since the target variable has a highly right-skewed distribution, we wil
 
 Density of POIs is one of the first feature type of interest for our model \citep{cerveroTravelDemand3Ds1997}, which represents the presence intensity of amenities or transport nodes of each type in an area that would attract visitors (in our case, coming by public transport). We expect a positive correlation between the density of POIs of all types to the total number of arrivals. An area with a high concetration of retail within a 15-minute walk is expected be more attractive than a similar-sized area with a low concetration of retail. Similarly, an area with a high concentration of transport facilities such as stations, bus stops are expected to be accommodating a higher inflow volume of visitors. However, feature importance and spatial nonstationarity (different impact on the target variable depending  the location) in this regard will be factors of interest as we interpret the model predictions post-training.
 
-All density-related features---i.e., population, amenity POI density and transport node POI density---are formulated by aggregating their values for each spatial unit (isochrone) by type, resulting in a set of \textbf{16 features} (See Figure \ref{fig:poi} in the Appendix)
+All density-related features---i.e., population, amenity POI density and transport node POI density---are formulated by aggregating their values for each spatial unit (isochrone) by type, resulting in a set of \textbf{16 features} (See Figure \ref{fig:poi})
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{POP.png}
+    \caption{Population density (UK Census 2011)}
+    \label{fig:pop}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{POI.png}
+    \caption{Amenity and Transport POI density by type (Source: OSM)}
+    \label{fig:poi}
+\end{figure}
 
 \subsubsection*{Diversity}
 
 Diversity of Amenity POIs according to \citet{cerveroTravelDemand3Ds1997} is also an important factor that may influence attractiveness of an urban area for certain type of non-commute travel demand. The implication from their conclusion is that between two areas with all else being equal, the area that is more diverse in the types of amenities it provides will be more attractive on average, because of their vibrancy and the possibility it can affords visitors to accomplish different tasks in one trip.
 
-- Transport POI diversity
+What was left under-explored by literature is the diversity of public transport facilities present in a spatial unit of analysis, which is an important factor that may influence the attractiveness of a destination area for non-commute travel demand. Another reason is the possibility to capture the modal interchange behaviour of passengers whereby they alight in a certain area only to switch between different means in order to reach their final destination elsewhere. Between two areas with the same amenity POI profile, the area that can be reached with multiple bus routes and several rail services may be more attractive to visitors either because it is well-connected, or because provides opportunities for passengers to switch between different modes of transport. Since there is no origin-destination matrix available for the study area, its inclusion helps the model training disentangle the impact of modal interchange behaviour on the target variable versus the impact of the presence of amenities. 
 
-\citet{cerveroTravelDemand3Ds1997} conceptualised diversity in the form of \textit{entropy}. A concept originated in information theory, entropy is the average amount of information conveyed by an event when considering all possible outcomes. \citet{battyEntropyComplexitySpatial2014} further adapted it to convey complexity in a spatial system. Interestingly, they also considered the increasing spatial entropy to mean a trade-off between density of amenity types and the unique types of amenity present, which stands in competition with other density-based features created. Therefore, the inclusion of entropy as a measure of POI diversity may improve the model prediction accuracy.
+\citet{cerveroTravelDemand3Ds1997} conceptualised diversity in the form of \textit{entropy}. A concept originated in information theory, entropy is the average amount of information conveyed by an event when considering all possible outcomes. \citet{battyEntropyComplexitySpatial2014} further adapted it to convey complexity in a spatial system. Interestingly, they also considered the increasing spatial entropy to mean a trade-off between density of amenity types and the unique types of amenity present, which stands in competition with other density-based features created. Therefore, the inclusion of entropy as a measure of POI diversity may improve the model prediction accuracy. We intend to replicate the approach used by both of the cited works above and adopt the formulation of entropy introduced by \citet{shannonMathematicalTheoryCommunication1948} to calculate the diversity index of amenity POIs in each spatial unit. The diversity index is to be calculated as follows:
 
-Although there are many formulation for the calculation of entropy, we intend to replicate the methodology used by both of the cited works above and adopt the formulation of entropy introduced by \citet{shannonMathematicalTheoryCommunication1948} as follows:
+\begin{equation}
+    H = -\sum_{i=1}^{n} p_i \ln p_i
+\end{equation}
 
-- formula
+where $p_i$ is the proportion of the $i$-th POI class in the total number of POIs in the spatial unit, and $n$ is the total number of POI classes being considered. The entropy index ranges from 0 to $\ln n$, where 0 indicates no diversity and $\ln n$ indicates maximum diversity, which is then normalised to the 0-1 range. Based on this definition, we will calculate \textbf{3 features} related to diversity of amenity POIs and transport POIs, further explained as follows:
 
-Mapping
+\begin{itemize}
+    \setlength\itemsep{0em}
+    \item \textit{Amenity POI}: 12 amenity POI classes are considered for the calculation of the diversity index for eac spatial unit (see Table \ref{tab:osmpoi}). Looking at the 10\% highest values of the diversity index in Figure \ref{fig:diversity}, we can see that the most diverse areas are located throughout the Greater London area, which much of urban studies literature links to activity centres or neighbourhoods. As a whole, the distribution of the diversity index is right-skewed, meaning we observe a generally high diversity of amenity in Greater London than a normal distribution would suggest.
+    \item \textit{Transport POI diversity by mode}: 3 transport POI classes are considered for the calculation of the diversity index for each spatial unit (see Table \ref{tab:osmpoi}). The top 10\% values of the diversity index are mapped in Figure \ref{fig:diversity}, showing that the most diverse areas are located around important transport internmodal hubs, such as national rail stations, airports, and ferry piers.
+    \item \textit{Transport POI diversity by route option}: A more granular diversity index is calculated for the transport POIs, considering the different bus routes and train services the transport POIs in each spatial unit serve. The top 10\% values of the diversity index are mapped in Figure \ref{fig:diversity}, showing that the most transport-option diverse areas are not only intermodal hubs but also areas around trunk routes where many bus routes, or rail services converge.
+\end{itemize}
 
-- map
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{divmap.png}
+    \centering
+    \includegraphics[width=\textwidth]{divhisto.png}
+    \captionsetup{justification=centering}
+    \caption{Normalised diversity indices for Amenity POIs, Transport POIs by mode and by service. \textit{Top}: Mapping top 10\% values, \textit{Bottom}: Distribution of diversity indices}
+    \label{fig:diversity}
+\end{figure}
 
-% Add plots of diversity index for 3 boroughs
+The inclusion of both transport diversity indices aim to provide complementary information to the model, as they capture different aspects of the transport network that may contribute to the attractiveness of an area for non-commute travel demand. High transport mode diversity indicates a high possibility that the area facilitates modal interchange for onward travel (perhaps long-distance intercity), whereas high transport route diversity, in addition to that, indicates a high possibility that the area is well-connected with good frequency, and thus more easily reachable. Zooming in to a specific area, such as the Hammersmith and Fulham borough, we can see that there is a slight divergence between the two transport diversity indices (Figure \ref{fig:diversityboro}). The Shapherd's Bus area has a higher transport mode diversity index thanks to the existence of a national rail services (Southern Railways) beyond Tube and busses, while the area around Earl's Court has a higher transport option diversity index due to the presence of multiple bus routes converging in the area.
+
+\begin{figure}[hbt]
+    \centering
+    \includegraphics[width=\textwidth]{divboro.png}
+    \captionsetup{justification=centering}
+    \caption{Top 10\% diversity indices, Hammersmith and Fulham}
+    \label{fig:diversityboro}
+\end{figure}
 
 
 \subsubsection*{Centrality}
-- Which 3 centrality measures are used
+Whereas the public transport facility diversity index, previously discussed, captures the variety of transport options available in an area, it obscures the accessibility aspect in relation to other areas in the region of interest using the public transport network. It adds yet another layer of information to the model, as it is expected to capture the importance of a transport node in the network, which may influence the attractiveness of an area for non-commute travel demand. For example, between two areas with similar diversity of transport options, the area with a higher centrality measure may be more attractive to visitors because it is more 'central' in the network. 
 
-% Add plots of network
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{network.png}
+    \captionsetup{justification=centering}
+    \caption{Network graphs of TfL Rail (left) and Bus (right) networks (Source: TfL)}
+    \label{fig:network}
+\end{figure}
 
+To achieve that, first we construct the network graph of the TfL Bus and the TfL Tube and Rail networks (See Figure \ref{fig:network}). The nodes in the network represent the transport nodes (stations and stops) in the network, and the edges represent the routes. Due to the lack of data related to travel time or frequency, we abstain from combining the two networks into a multi-layered network, which would have allowed us to consider the whoel public transport network as one integrated one. Instead, we will calculate the following centrality measures for all the nodes in the Rail and Bus networks separately, resulting in a set of 6 node attributes:
 
-% Add plots of centrality measures
+\begin{itemize}
+    \setlength\itemsep{0em}
+    \item \textit{Degree centrality}: The number of direct connections a node has in the network. A high degree centrality indicates that the node is well-connected to other nodes in the network (i.e., many connections available).
+    \item \textit{Closeness centrality}: The average shortest path length from a node to all other nodes in the network. A high closeness centrality indicates that the node is close to other nodes in the network (i.e., centrally located). 
+    \item \textit{Betweenness centrality}: The number of shortest paths that pass through a node in the network. A high betweenness centrality indicates that the node is an important bridge between other nodes in the network (i.e., transport hubs).
+\end{itemize}
 
-- Why not multi-Layered network
-\subsection{Incorporating spatial lags as feature}
+Finally, in order to incorporate calculated attributes of the nodes into \textbf{6 features} of centrality for the spatial units to train our model, we will consider the nodes that are in each of the spatial unit, and extract the maximum attrbutes among them. In other words, the centrality feature of a spatial unit has the value of the rail or bus transport node with the highest centrality measure. The mapping of the centrality measures to the spatial units is illustrated in Figure \ref{fig:centrality}.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{centrality.png}
+    \captionsetup{justification=centering}
+    \caption{Mapping centrality measures of spatial units (isochrones)\\on Rail (left) and Bus (right) networks}
+    \label{fig:centrality}
+\end{figure}
+
+\subsubsection*{Summary of feature engineering}
+
+In summary, the feature engineering process results in a total of \textbf{25 features} that will be used to train the model to predict the (log-transformed) total daily arrivals at a transport node or bus stop in a given spatial unit. The features are summarised in Table \ref{tab:features}.
+
+\begin{table}[ht]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|r||l|}
+        \hline
+        \rowcolor{lightgray}
+        \textbf{No.} & \textbf{Feature} \\
+        \hline
+        1 & Population density \\
+        2-13 & Amenity POI density by type (12) \\
+        14-16 & Transport POI density by type (3) \\
+        17 & Amenity POI diversity index \\
+        18 & Transport POI diversity index by mode \\
+        19 & Transport POI diversity index by route option \\
+        20-25 & Bus and Rail centrality measures (Degree, Closeness, Betweenness) (6) \\
+        \hline
+    \end{tabular}
+    \caption{Summary of the 25 main features engineered for the model}
+    \label{tab:features}
+\end{table}
+
+\subsection{Incorporating spatial lags as a feature for training}
 
 When working with machine learning models with data exist in a closed spatial system such as the Greater London area, it is important to consider the spatial autocorrelation in the target variables. Spatial autocorrelation refers to the phenomenon where the value of a variable at one location is correlated with the value of the same variable at nearby locations. In the context of our analysis, this means that the number of passengers arriving at a transport node or alighting from a bus at one isochrone is likely to be correlated with the number of passengers arriving at nearby isochrones. Although deep learning models' parameters and hyperparameters can be made more complex and tuned to reach a high degree of prediction accuracy without considering the spatial aspect of the dataset and can practically be considered non-parametric (i.e., not assuming the variables to have a specific distributions), accounting for potential spatial autocorrelation could reduce probability of biased outcomes even with a low-complexity and high-interpretability atchitecture, e.g. tree-based \citep{meyerImportanceSpatialPredictor2019}.
 
 The existence of spatial autocorrelation in the target variables is confirmed by the Local Indicators of Spatial Association (LISA) analysis, which shows the presence of spatial clusters in the target variables (Figure \ref{fig:lisacluster}), using Local Moran's I indicators. High-High and Low-Low clusters of the total daily arrivals with public transport are respectively present in the inner core and the outer edge. Unless spatial relational information among these spatial units are made apparent to the model during tuning and evaluation, we are bound to see low accuracy espeically in these localities that make up more than 50\% of the study area.  
 
-\begin{figure}[ht]
+\begin{figure}[hb]
     \centering
     \includegraphics[width=\textwidth]{lisa_Total.jpg}
     \captionsetup{justification=centering}
@@ -254,10 +337,10 @@ To address this issue, \citet{liuIncorporatingSpatialAutocorrelation2022} has pr
 \end{table}
 
 
-\pagebreak % Force a page break
+
+\pagebreak[4] % Force a page break
 \section{Model selection and evaluation}
 - Comparing Linear, XGBoost, ANN
-
 - Preference for XGBoost, to be evaluated in Results
 \section{Explainable machine learning with SHAP}
  - What is SHAP 
