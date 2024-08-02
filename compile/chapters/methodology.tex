@@ -134,7 +134,7 @@ As features will be extracted and engineered from different data sources, the sp
     \item Lastly, the density of the isochrones produced is a compromise between the granularity of the spatial unit and the computational resources required to process the data. The initial seeds of 16,890 points are originally centroids of the same number of H3 cells at resolution 9 needed to cover the Greater London area. 
 \end{itemize}
 
-The detailed methodology to generate the isochrones is illustrated in Figure \ref{fig:isochrones}, and two example isochrones in Central London can be found in Figure \ref{fig:isozoom}. It is worth noting that depending on where the spatial unit is located in the Greater London area, the isochrones may vary in shape and size due to the underlying pedestrian network and the distribution of transport nodes and amenity POIs. However, these variances are expected and even desirable as they more closely reflect pedestrian accessibility to different types of amenities and transport nodes. All raw data extracted from various sources will be aggregated and processed at the isochrone level to generate the necessary features and target variable for the model training (See Figure \ref{fig:preprocessing}). In the next section, we will describe the data transformation and feature engineering process in more detail. Note that the term spatial units (of analysis) and isochrones may be used interchangeable from this point on in our discussion.
+The detailed methodology to generate the isochrones is illustrated in Figure \ref{fig:isochrones}, and two example isochrones in Central London can be found in Figure \ref{fig:isozoom}. It is worth noting that depending on where the spatial unit is located in the Greater London area, the isochrones may vary in shape and size due to the underlying pedestrian network and the distribution of transport nodes and amenity POIs. However, these variances are expected and even desirable as they more closely reflect pedestrian accessibility to different types of amenities and transport nodes. All raw data extracted from various sources will be aggregated and processed at the isochrone level to generate the necessary features and target variable for the model training (See Figure \ref{fig:preprocessing}). In the next section, we will describe the data transformation and feature engineering process in more detail. Note that the terms spatial units (of analysis), isochrones, or simply areas may be used interchangeable from this point on in our discussion.
 
 \begin{figure}[ht]
     \centering
@@ -181,19 +181,28 @@ Lastly, since the target variable has a highly right-skewed distribution, we wil
     \caption{Distribution of the Total arrivals as raw count (left) and log-transformed (right). Similar transformations carried out for arrivals by each of the four time bands}
     \label{fig:rawlog}
 \end{figure}
-
 \subsection{Feature engineering}
 \subsubsection*{Density}
 
-Density of POIs is one of the first feature type of interest for our model, which represents the availability of amenities or transport nodes in an area that would attract visitors to come (in our case, using public transport). We expect a linear An area with a high concetration of retail within a 15-minute walk is expected be more attractive than a similar-sized area with a low 
+Density of POIs is one of the first feature type of interest for our model \citep{cerveroTravelDemand3Ds1997}, which represents the presence intensity of amenities or transport nodes of each type in an area that would attract visitors (in our case, coming by public transport). We expect a positive correlation between the density of POIs of all types to the total number of arrivals. An area with a high concetration of retail within a 15-minute walk is expected be more attractive than a similar-sized area with a low concetration of retail. Similarly, an area with a high concentration of transport facilities such as stations, bus stops are expected to be accommodating a higher inflow volume of visitors. However, feature importance and spatial nonstationarity (different impact on the target variable depending  the location) in this regard will be factors of interest as we interpret the model predictions post-training.
 
-All density-related features---i.e., population, amenity POI density and transport node POI density---are formulated by aggregating their values for each spatial unit (isochrone) by type, resulting in a set of 16 features (See Figure \ref{fig:poi} in the Appendix)
+All density-related features---i.e., population, amenity POI density and transport node POI density---are formulated by aggregating their values for each spatial unit (isochrone) by type, resulting in a set of \textbf{16 features} (See Figure \ref{fig:poi} in the Appendix)
 
 \subsubsection*{Diversity}
-- Defining diversity index
 
-- Use of Shannon entropy backed by literature
+Diversity of Amenity POIs according to \citet{cerveroTravelDemand3Ds1997} is also an important factor that may influence attractiveness of an urban area for certain type of non-commute travel demand. The implication from their conclusion is that between two areas with all else being equal, the area that is more diverse in the types of amenities it provides will be more attractive on average, because of their vibrancy and the possibility it can affords visitors to accomplish different tasks in one trip.
 
+- Transport POI diversity
+
+\citet{cerveroTravelDemand3Ds1997} conceptualised diversity in the form of \textit{entropy}. A concept originated in information theory, entropy is the average amount of information conveyed by an event when considering all possible outcomes. \citet{battyEntropyComplexitySpatial2014} further adapted it to convey complexity in a spatial system. Interestingly, they also considered the increasing spatial entropy to mean a trade-off between density of amenity types and the unique types of amenity present, which stands in competition with other density-based features created. Therefore, the inclusion of entropy as a measure of POI diversity may improve the model prediction accuracy.
+
+Although there are many formulation for the calculation of entropy, we intend to replicate the methodology used by both of the cited works above and adopt the formulation of entropy introduced by \citet{shannonMathematicalTheoryCommunication1948} as follows:
+
+- formula
+
+Mapping
+
+- map
 
 % Add plots of diversity index for 3 boroughs
 
@@ -207,8 +216,6 @@ All density-related features---i.e., population, amenity POI density and transpo
 % Add plots of centrality measures
 
 - Why not multi-Layered network
-
-
 \subsection{Incorporating spatial lags as feature}
 
 When working with machine learning models with data exist in a closed spatial system such as the Greater London area, it is important to consider the spatial autocorrelation in the target variables. Spatial autocorrelation refers to the phenomenon where the value of a variable at one location is correlated with the value of the same variable at nearby locations. In the context of our analysis, this means that the number of passengers arriving at a transport node or alighting from a bus at one isochrone is likely to be correlated with the number of passengers arriving at nearby isochrones. Although deep learning models' parameters and hyperparameters can be made more complex and tuned to reach a high degree of prediction accuracy without considering the spatial aspect of the dataset and can practically be considered non-parametric (i.e., not assuming the variables to have a specific distributions), accounting for potential spatial autocorrelation could reduce probability of biased outcomes even with a low-complexity and high-interpretability atchitecture, e.g. tree-based \citep{meyerImportanceSpatialPredictor2019}.
@@ -247,14 +254,11 @@ To address this issue, \citet{liuIncorporatingSpatialAutocorrelation2022} has pr
 \end{table}
 
 
-
-
 \pagebreak % Force a page break
 \section{Model selection and evaluation}
 - Comparing Linear, XGBoost, ANN
 
 - Preference for XGBoost, to be evaluated in Results
-
 \section{Explainable machine learning with SHAP}
  - What is SHAP 
  

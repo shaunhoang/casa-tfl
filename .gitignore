@@ -175,3 +175,7 @@ compile/main.synctex.gz
 *.gz
 *.out
 compile/main (1).pdf
+*.toc
+*.out
+*.lot
+*.lof
