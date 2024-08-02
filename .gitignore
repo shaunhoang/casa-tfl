@@ -179,3 +179,4 @@ compile/main (1).pdf
 *.out
 *.lot
 *.lof
+*.synctex(busy)
