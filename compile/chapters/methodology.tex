@@ -1,13 +1,13 @@
-\pagebreak 
-% 5360 words
+% 4000 words
+
 \section*{}
 
-In this section, we will first describe the methodology used to preprocess data from various sources to engineer the necessary features for the predictive model. Second, we will outline the model selection and evaluation process, and finally, we will discuss the methodology used to interpret the model predictions using SHAP techniques. For ease of reference, the data preprocessing and feature engineering pipeline is summarised in Figure \ref{fig:preprocessing}, and an overview of the model training and prediction interpretation methodology can be found in Figure \ref{fig:methodology}.
+In this section, we will first describe the methodology used to preprocess data from various sources to engineer the necessary features for the predictive model. Second, we will outline the model selection and evaluation process, and finally, we will discuss the methodology used to interpret the model predictions using SHAP techniques. For ease of reference, the data preprocessing and feature engineering pipeline is summarised in Figure \ref{fig:preprocessing}, and an overview of the model training and prediction interpretation methodology can be found in Figure \ref{fig:methodology}. More detailed information on the data sources and the feature engineering process can be found in the Data Sources section of the Appendix.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{preprocessing.png}
-    \caption{Overview of feature engineering pipeline}
+    \caption{Overview of the feature engineering pipeline}
     \label{fig:preprocessing}
 \end{figure}
 
@@ -17,110 +17,6 @@ In this section, we will first describe the methodology used to preprocess data 
     \caption{Overview of model training and interpretation}
     \label{fig:methodology}
 \end{figure}
-
-\pagebreak % Force a page break
-\section{Open data sources}
-
-The analysis carried out in this dissertation will utilise the Greater London area as the working case study, serving as an example for further replications of the analysis for other localities. The Office for National Statistics (ONS) defines the Greater London metropolitan area to include the City of London and the 32 London boroughs, with a total area of 1,572 km$^2$ and a population of 9.4 million people, making it the largest in the United Kingdom. The choice of the Greater London metropolitan area is also motivated by the availability of open data sources from which necessary features could be derived and the complexity of the public transport network that is coupled with rich usage data made available to the public. The data sources used in this analysis are summarised in Table \ref{tab:datasources} and detailed below.
-
-
-\begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.5}
-    \begin{tabular}{|l|l|l|}
-        \hline 
-        \rowcolor{lightgray}
-        \textbf{} & \textbf{Variables} & \textbf{Sources} \\
-        \hline
-
-        \multirow{2}{12em}{\textbf{Public transport arrivals (target)}} 
-        & Tube and Rail station exits & TfL network demand (NUMBAT) \\ 
-        & Bus alightings & TfL network demand (BUSTO) \\
-        \hline
-
-        \textbf{Population} & Population count & UK Census 2021 \\
-        \hline
-
-        \multirow{2}{12em}{\textbf{Amenity Profile}} 
-        & POI count by type & OSM Amenity POIs \\ 
-        & POI diversity index & \\ 
-        \hline 
-
-        \multirow{3}{12em}{\textbf{Public Transport (PT) Connectivity Profile}} 
-        & PT node count by type &  \\
-        & PT node diversity index & OSM Transport POIs and TfL \\
-        & PT network centrality &  \\
-        \hline
-
-            \end{tabular}
-    \caption{Summary of data used in the analysis and their sources}
-    \label{tab:datasources}
-\end{table}
-
-\subsubsection*{Transport for London (TfL) Open Data}
-
-We use the following GIS datasets from the \href{https://gis-tfl.opendata.arcgis.com/}{TfL GIS Open Data Hub} and \href{https://api.tfl.gov.uk/}{TfL API} to derive transport-related features for the study area including density of transport facilities, diversity of transport options, and accessibility in the form of centrality measures in the Rail and Bus networks separately. The networks of interest are defined as follows:
-
-\begin{itemize}
-    \setlength\itemsep{0em}
-    \item \textit{Rail network} includes the London Underground, London Overground, the Docklands Light Railway, and the Elizabeth Line, excluding stations and segments that are not managed by TfL or fall outside the Greater London area.
-    \item \textit{Bus network} includes stop locations and route data of all bus and tram services, excluding stops and route segments that are not managed by TfL or within the Greater London area.
-\end{itemize}
-
-TfL also provides annually-updated \href{http://crowding.data.tfl.gov.uk/}{network demand datasets}, which will be used to derive the target variable of our analysis. The datasets are special interest to our analysis are namely \textit{Rail demand data (NUMBAT)} and the \textit{Bus demand data (BUSTO)}, from which we will extract estimated counts of station exits and bus alightings at the station or stop level, respectively. The dataset's temporal granularity is also an important aspect to consider. To address non-commute trips for the analysis, we will specifically use \textbf{Saturday average demand}, representing the demand in a typical period without any major citywide disruptions or events\footnote{This Saturday travel demand may still include work trips for those working on Saturdays, albeit not concentrated into peak periods as with weekday travel demand. For the scope of this analysis, we will treat these potential work trips as non-commute.}. To examine possible variations between different times of day, besides the total daily counts of exits and bus alightings, we will aggregate the data into four larger time bands\footnote{The choice of time band delineation is a compromise between different granularity levels afforded by the TfL rail and the bus demand datasets. There are opportunities to deepen the analysis by further segmenting the time bands into finer intervals if data permits.}:
-
-\begin{itemize}
-    \setlength\itemsep{-0.2em}
-    \item \textit{Morning} (05:00 - 10:00): Limited mobility expected due to early hours
-    \item \textit{Midday} (10:00 - 19:00): High daytime mobility expected
-    \item \textit{Evening} (19:00 - 00:00): High evening mobility expected
-    \item \textit{Late} (00:00 - 05:00): Minimal mobility expected due to sparser night PT services
-\end{itemize}
-
-It is worth noting that despite the existence of the Oyster Card integrated fare system, TfL does not provide origin-destination data for individuals as open data. Therefore, station exits and bus alightings are not directly associated with the number of passengers traversing through the system but are treated as discrete events. For example, a person who takes a bus to reach a Tube station for onward travel and then exits to arrive at their destination would be counted as two separate data points, one alighting for the bus and one station exit for the Tube. Nevertheless, our model will take this into account when making porediction and allows us to investigate patterns and the contribution of modal interchange behaviour in our interpretation.
-
-Lastly, we need to acknowledge the particularity of the TfL bus demand dataset (BUSTO). Although passengers do not 'tap off' when alighting from busses, TfL has developed a methodology to estimate the number of passengers alighting at each bus stop based on individuals' next actions and other statistical methods. The methodology is described in detail in the \href{http://crowding.data.tfl.gov.uk/BUSTO/BUSTO\%20User\%20Guide\%20and\%20Data\%20Dictionary\%20v1.0.pdf}{BUSTO User Guide and Data Dictionary}
-
-\subsubsection*{UK Census Data 2021}
-For the estimated population datasets, we rely on the most recent United Kingdom Census data administered in 2021. The data is ingested at the Output Area (OA) level, which is the smallest geographical unit for which census data is available. Further processing will aggregate the data to the desired spatial unit of analysis.
-
-\subsubsection*{OpenStreetMap POIs}
-OpenStreetMap (OSM) is a collaborative mapping project that provides a free and open-source map of the world. The version of OSM data used in this analysis is packaged by an OpenStreetMap community project \href{https://www.geofabrik.de/en/geofabrik/openstreetmap.html}{Geofabrik} and provides a snapshot of the OSM database as of June 2024. Geofabrik also standardises the categorisation of POIs' amenity attributes in the OSM database into larger classes\footnote{More information about Geofabrik's OSM data product can be found in \href{https://www.geofabrik.de/data/geofabrik-osm-gis-standard-0.6.pdf}{Geofabrik OSM data dictionary}}. Our analysis will use this default POI classification, extracting 12 amenity POI types. Lastly, apart from amenity POIs, we also make use of the OSM transport POIs point data to derive non-TfL transport-related features, such as national rail stations, ferry piers, long-distance bus stations and airports. 
-
-Combined with transport node data acquired from TfL open data sources, all extracted Amenity and Transport POI types of interest are summarised in Table \ref{tab:osmpoi}.
-
-\begin{table}[ht]
-    \centering
-    \renewcommand{\arraystretch}{1.1}
-    \begin{tabular}{|l|l|l|}
-        \hline
-        \rowcolor{lightgray}
-        & \textbf{POI Type} & \textbf{Examples} \\
-        \hline
-        \multirow{13}{*}{\textbf{Amenity}}
-            &\textit{Public Facilities} & Post offices, schools, universities, libraries,... \\
-            &\textit{Medical} & Hospitals, clinics, pharmacies,... \\
-            &\textit{Entertainment} & Theatres, Night clubs, cinemas,... \\
-            &\textit{Outdoors} & Parks, playgrounds,... \\
-            &\textit{Active} & Sports centres, swimming pools, stadiums,... \\
-            &\textit{Restaurants} & Restaurants, cafes, pubs, bars,... \\
-            &\textit{Hotels} & Hotels, motels, hostels,... \\
-            &\textit{Shopping} & Supermarkets, bakeries, florists, bookshops, malls,... \\
-            &\textit{Banking} & Banks, ATMs,... \\
-            &\textit{Tourism} & Tourist attractions, museums, monuments, viewpoints,... \\
-            &\textit{Religious} & Churches, mosques, temples,... \\
-            &\textit{Nature} & Riverbanks, beaches, hills,... \\
-        \hline
-        \multirow{3}{*}{\textbf{Transport}}
-            &\textit{Bus stops} & Bus stops and stations (TfL) \\
-            &\textit{Rail stations} & TfL rail stations (TfL) and Non-TfL rail stations (OSM) \\
-            &\textit{Other transport hubs} & Airports, ferry piers, long-distance bus stations (OSM) \\
-        \hline
-    \end{tabular}
-    \caption{Summary of Amenity and Transport POI types used in the analysis}
-    \label{tab:osmpoi}
-\end{table}
-
 
 \pagebreak % Force a page break
 \section{Defining the spatial unit of analysis}
@@ -201,7 +97,7 @@ All density-related features---i.e., population, amenity POI density and transpo
     \label{fig:poi}
 \end{figure}
 
-\subsubsection*{Diversit-based features}
+\subsubsection*{Diversity-based features}
 
 Diversity of Amenity POIs according to \citet{cerveroTravelDemand3Ds1997} is also an important factor that may influence the attractiveness of an urban area for certain types of non-commute travel demand. The implication from their conclusion is that between two areas, with all else being equal, the area that is more diverse in the types of amenities it provides will be more attractive on average because of their vibrancy and the possibility it can afford visitors to accomplish different tasks in one trip.
 
@@ -232,25 +128,33 @@ where $p_i$ is the proportion of the $i$-th POI class in the total number of POI
     \label{fig:diversity}
 \end{figure}
 
-The inclusion of both transport diversity indices aims to provide complementary information to the model, as they capture different aspects of the transport network that may contribute to the attractiveness of an area for non-commute travel demand. High transport mode diversity indicates a high possibility that the area facilitates modal interchange for onward travel (perhaps long-distance intercity), whereas high transport route diversity, in addition to that, indicates a high possibility that the area is well-connected with good frequency and thus more easily reachable. Zooming into a specific area, such as the Hammersmith and Fulham borough, we can see that there is a slight divergence between the two transport diversity indices (Figure \ref{fig:diversityboro}). The Shapherd's Bus area has a higher transport mode diversity index thanks to the existence of national rail services (Southern Railways) beyond Tube and busses, while the area around Earl's Court has a higher transport option diversity index due to the presence of multiple bus routes converging in the area.
-
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
     \centering
     \includegraphics[width=\textwidth]{divboro.png}
     \captionsetup{justification=centering}
-    \caption{Top 10\% diversity indices, Hammersmith and Fulham}
+    \caption{Top 10\% values of three diversity indices\\Borough: Hammersmith and Fulham}
     \label{fig:diversityboro}
 \end{figure}
+
+The inclusion of both transport diversity indices aims to provide complementary information to the model, as they capture different aspects of the transport network that may contribute to the attractiveness of an area for non-commute travel demand. High transport mode diversity indicates a high possibility that the area facilitates modal interchange for onward travel (perhaps long-distance intercity), whereas high transport route diversity, in addition to that, indicates a high possibility that the area is well-connected with good frequency and thus more easily reachable. Zooming into a specific area, such as the Hammersmith and Fulham borough, we can see that there is a slight divergence between the two transport diversity indices (Figure \ref{fig:diversityboro}). The Shapherd's Bus area has a higher transport mode diversity index thanks to the existence of national rail services (Southern Railways) beyond Tube and busses, while the area around Earl's Court has a higher transport option diversity index due to the presence of multiple bus routes converging in the area.
 
 \subsubsection*{Centrality-based features}
 Whereas the public transport facility diversity index, previously discussed, captures the variety of transport options available in an area, it obscures the accessibility aspect in relation to other areas in the region of interest using the public transport network. It adds yet another layer of information to the model, as it is expected to capture the importance of a transport node in the network, which may influence the attractiveness of an area for non-commute travel demand. For example, between two areas with similar diversity of transport options, the area with a higher centrality measure may be more attractive to visitors because it is more 'central' in the network. 
 
-\begin{figure}[!ht]
+\begin{figure}[!hbt]
     \centering
-    \includegraphics[width=\textwidth]{network.png}
+    \includegraphics[width=0.7\textwidth]{network.png}
     \captionsetup{justification=centering}
     \caption{Network graphs of TfL Rail (left) and Bus (right) networks (Source: TfL)}
     \label{fig:network}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.75\textwidth]{centrality.png}
+    \captionsetup{justification=centering}
+    \caption{Mapping centrality measures of spatial units (isochrones)\\on Rail (left) and Bus (right) networks}
+    \label{fig:centrality}
 \end{figure}
 
 To achieve that, first, we construct the network graph of the TfL Bus and the TfL Tube and Rail networks (See Figure \ref{fig:network}). The nodes in the network represent the transport nodes (stations and stops) in the network, and the edges represent the routes. Due to the lack of data related to travel time or frequency, we abstain from combining the two networks into a multi-layered network, which would have allowed us to consider the whole public transport network as one integrated one. Instead, we will calculate the following centrality measures for all the nodes in the Rail and Bus networks separately, resulting in a set of 6 node attributes:
@@ -264,21 +168,13 @@ To achieve that, first, we construct the network graph of the TfL Bus and the Tf
 
 Finally, in order to incorporate calculated attributes of the nodes into \textbf{6 features} of centrality for the spatial units to train our model, we will consider the nodes that are in each of the spatial units and extract the maximum attributes among them. In other words, the centrality feature of a spatial unit has the value of the rail or bus transport node with the highest centrality measure. The mapping of the centrality measures to the spatial units is illustrated in Figure \ref{fig:centrality}.
 
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=\textwidth]{centrality.png}
-    \captionsetup{justification=centering}
-    \caption{Mapping centrality measures of spatial units (isochrones)\\on Rail (left) and Bus (right) networks}
-    \label{fig:centrality}
-\end{figure}
-
-\subsubsection*{Summary of feature engineering}
+\subsection{Incorporating spatial lags as a feature}
 
 In summary, the feature engineering process results in a total of \textbf{25 features} that will be used to train the model to predict the (log-transformed) total daily arrivals at a transport node or bus stop in a given spatial unit. The features are summarised in Table \ref{tab:features}.
 
-\begin{table}[ht]
+\begin{table}[!ht]
     \centering
-    \renewcommand{\arraystretch}{1.5}
+    \renewcommand{\arraystretch}{1.25}
     \begin{tabular}{|r||l|}
         \hline
         \rowcolor{lightgray}
@@ -296,7 +192,6 @@ In summary, the feature engineering process results in a total of \textbf{25 fea
     \caption{Summary of the 25 main features engineered for the model}
     \label{tab:features}
 \end{table}
-\subsection{Incorporating spatial lags as a feature}
 
 When working with machine learning models with data that exist in a closed spatial system such as the Greater London area, it is important to consider the spatial autocorrelation in the target variables. Spatial autocorrelation refers to the phenomenon where the value of a variable at one location is correlated with the value of the same variable at nearby locations. In the context of our analysis, this means that the number of passengers arriving at a transport node or alighting from a bus at one isochrone is likely to be correlated with the number of passengers arriving at nearby isochrones. Although deep learning models' parameters and hyperparameters can be made more complex and tuned to reach a high degree of prediction accuracy without considering the spatial aspect of the dataset and can practically be considered non-parametric (i.e., not assuming the variables to have a specific distribution), accounting for potential spatial autocorrelation could reduce the probability of biased outcomes even with a low-complexity and high-interpretability architecture, e.g. tree-based \citep{meyerImportanceSpatialPredictor2019}.
 
@@ -306,11 +201,11 @@ The existence of spatial autocorrelation in the target variables is confirmed by
     \centering
     \includegraphics[width=\textwidth]{lisa_Total.jpg}
     \captionsetup{justification=centering}
-    \caption{LISA cluster map of PT arrival volume (Total daily)\\Global Moran's I: 0.742 (High spatial autocorrelation)}
+    \caption{LISA cluster map of Total arrivals showing local sptial autocorrelation\\Global Moran's I: 0.742 (High spatial autocorrelation)}
     \label{fig:lisacluster}
 \end{figure}
 
-To address this issue, \citet{liuIncorporatingSpatialAutocorrelation2022} has proposed incorporating spatial lag into the model as a feature. More specifically, the authors have concluded that when spatial features were induced in the random forest models, the global spatial autocorrelation among the predictions' residuals was significantly reduced, also leading to higher validation accuracy. For our analysis, the spatial lag feature of each spatial unit is calculated as the average number of passengers arriving at neighbouring isochrones\footnote{The choice of the distance band of 750m was calibrated with the objective to ensure all spatial units have neighbours, i.e., there are no islands.}. The creation of a \textbf{Spatial Lag features} is replicated for the total daily arrival counts, as well as for each time band, resulting in a set of additional features that will be included for the training of the model in predicting the corresponding target variable,
+To address this issue, \citet{liuIncorporatingSpatialAutocorrelation2022} has proposed incorporating spatial lag into the model as a feature. More specifically, the authors have concluded that when spatial features were induced in the random forest models, the global spatial autocorrelation among the predictions' residuals was significantly reduced, also leading to higher validation accuracy. For our analysis, the spatial lag feature of each spatial unit is calculated as the average number of passengers arriving at neighbouring isochrones\footnote{The choice of the distance band of 750m was calibrated with the objective to ensure all spatial units have neighbours, i.e., there are no islands.}. The creation of a \textbf{Spatial Lag features} is replicated for the total daily arrival counts, as well as for each time band, resulting in a set of additional features to be included to train the model in predicting the corresponding target variable.
 
 \begin{table}[ht]
     \centering
@@ -335,7 +230,7 @@ To address this issue, \citet{liuIncorporatingSpatialAutocorrelation2022} has pr
 
 
 
-\pagebreak[4] % Force a page break
+% \pagebreak[4] % Force a page break
 \section{Model selection and interpretation}
 
 As previously explored through relevant literature, we are faced with an important decision when attempting to model the non-commute travel demand in the Greater London area based on variables related to the built environments, such as the amenity profile and the connectivity profile. More specifically, the choice is between using a machine learning model, which prioritises prediction accuracy and can handle heterogeneous data, and a spatial-statistical one, which prioritises interpretability and requires more stringent requirements of the explanatory variables. Although spatial autocorrelation and spatial heterogeneity are the two well-known effects in spatial analytics and are factored in statistical models such as the Spatial Lag Model or Geographically Weighted Regression, \citet{liExtractingSpatialEffects2022} has shown that machine learning models can capture spatial effects if spatial information is provided. The compromise between the two is the use of machine learning explanation techniques, which can provide both high prediction accuracy and interpretability while being spatially aware. Figure \ref{fig:methodology} provides an overview of the model training and interpretation process.
@@ -343,13 +238,13 @@ As previously explored through relevant literature, we are faced with an importa
 \subsubsection*{Model selection}
 Firstly, we will compare the prediction performance of three machine learning models: \textit{Linear Regression, Gradient Boosting, and Neural Network} in predicting Total arrivals. As we are working within a spatial system with a high degree of spatial autocorrelation demonstrated earlier, special attention will be paid to cross-validation in hyperparameter tuning and final evaluation where random cross-validation techniques and random train-test splits are not able to ensure the absence of leakage of information between the training and testing sets which inflates the accuracy score and to avoid undetected overfitting. 
 
-More specifically, the model tuning and evaluation process will be carried out using a nested 10-fold cross-validation approach introduced by \citet{schratzPerformanceEvaluationHyperparameter2018}, with $R^2$ as the goodness-of-fit score. The nested cross-validation approach is illustrated in Figure \ref{fig:spatialnested}, where the inner loop is used to tune the hyperparameters of the model, and the outer loop is used to evaluate the model's performance. The spatial k-fold technique ensures that the training and test sets in both the inner and the outer folds are spatially distinct to avoid data leakage. The model and its hyperparameters with the highest $R^2$ score will be selected as the best model to fit the entire dataset for further interpretation\footnote{Although the model tuning and selection process is only performed on Total Arrivals as the target variable for simplicity, the chosen model will be applied to predict arrivals by time bands.}.
+More specifically, the model tuning and evaluation process will be carried out using a nested 10-fold cross-validation approach introduced by \citet{schratzPerformanceEvaluationHyperparameter2018}, with $R^2$ as the goodness-of-fit score. The nested cross-validation approach is illustrated in Figure \ref{fig:spatialnested}, where the inner loop is used to tune the hyperparameters of the model, and the outer loop is used to evaluate the model's performance. The spatial 10-fold cross-validation splits for our datasets (see Figure \ref{fig:kfold} in Appendix) ensures that the training and test sets in both the inner and the outer folds are spatially distinct to avoid data leakage. The model and its hyperparameters with the highest $R^2$ score will be selected as the best model to fit the entire dataset for further interpretation\footnote{Although the model tuning and selection process is only performed on Total Arrivals as the target variable for simplicity, the chosen model will be applied to predict arrivals by time bands.}.
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{spatialvalidation.jpg}
     \captionsetup{justification=centering}
-    \caption{Spatial vs. non-spatial nested cross-validation using 5-folds for hyperparameter tuning and performance evaluation. This technique helps ensure the training and test sets in both the inner and the outer folds are spatially clustered to avoid data leakage. Source: \citet{schratzPerformanceEvaluationHyperparameter2018}}
+    \caption{Spatial vs. non-spatial nested cross-validation using 5-folds for hyperparameter tuning and performance evaluation. This technique helps ensure the training and test sets in both the inner and the outer folds are spatially clustered to avoid data leakage. \\ Source: \citet{schratzPerformanceEvaluationHyperparameter2018}}
     \label{fig:spatialnested}
 \end{figure}
 
@@ -366,3 +261,4 @@ Among other properties contributing to its popularity in Explainable AI research
 \end{itemize}
 
 Finally, one ongoing debate regarding the use of SHAP for explainable is captured by \citet{chenTrueModelTrue2020}'s work exploring 'True to Model' versus 'True to Data' explanations. The 'True to Data' approach produces \textit{observational SHAP values} which reflect how a feature contributes to the model's prediction when considering the dependencies and correlations present in the training data, whereas the 'True to Model' approach produces \textit{interventional SHAP values} which reveal how a feature influences the model's prediction if we manipulate it independently, regardless of how it might interact with other features in reality. In our case, as we are more interested in observing feature contribution to the model prediction in a controlled environment rather than observing the relationships between features, we will use the 'True to Model' approach to interpret the model's prediction made possible by the \textit{shap} package.
+
