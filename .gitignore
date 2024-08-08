@@ -184,3 +184,6 @@ compile/main (1).pdf
 *.lot
 *.lof
 *.synctex(busy)
+/admin
+/.vscode
+/literature
