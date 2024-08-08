@@ -104,7 +104,7 @@ Combined with transport node data acquired from TfL open data sources, all extra
 
 One ongoing debate regarding the use of SHAP for explainable is captured by \citet{chenTrueModelTrue2020}'s work exploring 'True to Model' versus 'True to Data' explanations. The 'True to Data' approach produces \textit{observational SHAP values} which reflect how a feature contributes to the model's prediction when considering the dependencies and correlations present in the training data, whereas the 'True to Model' approach produces \textit{interventional SHAP values} which reveal how a feature influences the model's prediction if we manipulate it independently, regardless of how it might interact with other features in reality. In our case, as we are more interested in observing feature contribution to the model prediction in a controlled environment rather than observing the relationships between features, we will use the 'True to Model' approach to interpret the model's prediction made possible by the \textit{shap} package.
 
-
+\section{Supplemental Figures}
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{kfold.png}
