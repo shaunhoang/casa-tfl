@@ -1,4 +1,6 @@
-\section{RQ1: Predicting trip attraction with spatial features}
+% 2500 words
+
+\section*{RQ1: Predicting trip attraction with spatial features}
 \subsubsection*{Prediction model evaluation and selection}
 
 As previously explained, the choice of a suitable machine learning model is critical as Machine Learning explanation techniques such as SHAP would be less insightful if the predictions produced high inaccuracies. The evaluation results in Table \ref{tab:modeleval} show that the Gradient Boosting tree-based model (XGBoost) outperforms the other models in predicting the target variable Total arrivals (log), achieving an $R^2$ of 0.792, and outperforms itself when predicting the pre-transformed target variable Total arrivals with an $R^2$ of 0.633. Meanwhile, the simple Linear Regression model performs more poorly in comparison through underfitting (i.e., consistently low accuracy with training data folds), and the Multilayer Perceptron Artificial Neural Network model also performs poorly but due to overfitting (i.e., high accuracy achieved with training data folds but low accuracy with validation data folds). This shows that while XGBoost has long been popular thanks to its fast convergence and high validation accuracy, transforming the highly right-skewed target variable is another way to improve prediction performance. 
@@ -22,7 +24,7 @@ As previously explained, the choice of a suitable machine learning model is crit
     \label{tab:modeleval}
 \end{table}
 
-\begin{table}[hb]
+\begin{table}[ht]
     \centering
     \renewcommand{\arraystretch}{1.5}
     \begin{tabular}{|c|c|c|c|}
@@ -42,7 +44,7 @@ As previously explained, the choice of a suitable machine learning model is crit
     \label{tab:modelevaltimeband}
 \end{table}
 
-\begin{figure}[ht]
+\begin{figure}[!hbt]
     \centering
     \includegraphics[width=0.8\textwidth]{correlation.png}
     \captionsetup{justification=centering}
@@ -52,9 +54,9 @@ As previously explained, the choice of a suitable machine learning model is crit
 
 On managing overfitting risks, XGBoost is a standout among other models also for its built-in L1 and L2 regularisation hyperparameters, which penalise the model for complexity and suppress highly correlated input features. This is particularly important when considering the complex patterns of correlations among our input features, as shown in Figure \ref{fig:corrmatt}. Here we observe a few cohorts of highly correlated features such as Population-Public Facilities-Religious POIs, Entertainment-Restautants-Shopping POIs, or among the different public transport centrality measures. Therefore, with XGBoost, we had the opportunity to further fine-tune two hyperparameters \textit{alpha} and \textit{lambda}---which represent L1 and L2 regularisation thresholds, respectively---to achieve even better results. Similar to previously, nested spatial k-fold cross-validation was used to fine-tune the model and validate the results. The fine-tuned XGBoost model improves $R^2$ up to \textbf{0.823} (an approx. 3pp increase) in predicting total arrivals from the pre-tuned model and performs consistently well in predicting arrivals by time band, as shown in Table \ref{tab:modelevaltimeband}. 
 
-The results suggest that the fine-tuned XGBoost model is fit for purpose and enables us to address the first research question: ztextit{Built environment features are adequate predictors of public transport inflow demand in London to a high degree of accuracy}. This has implications for urban analytics literature and is important for urban planners and policymakers, as it provides a tool that can be used to predict public transport demand and plan for future infrastructure development that relies entirely on accessible data sources such as OpenStreetMap and the UK Census.
+The results suggest that the fine-tuned XGBoost model is fit for purpose and enables us to address the first research question: ztextit{Built environment features are adequate predictors of public transport inflow demand in London to a high degree of accuracy}. This has implications for urban analytics literature and is important for urban planners and policymakers, as it provides a tool that can be used to predict public transport demand and plan for future infrastructure development that relies entirely on accessible data sources such as OSM and the UK Census.
 
-Before further analysis, it is important to recognise where the model falls short and what that may tell us about its potential lack of generalisability. Figure \ref{fig:outliers} shows the distribution of observations whose prediction residuals are 'outliers', i.e., the target variables are significantly overpredicted or underpredicted. These are mostly concentrated in Outer London where poor predictions go in both directions. While it is not easy to unravel, there are some possible root causes: 
+Before further analysis, it is important to recognise where the model falls short and what that may tell us about its potential lack of generalisability. Figure \ref{fig:outliers} shows the distribution of observations whose prediction residuals are 'outliers', i.e., the target variables are significantly overpredicted or underpredicted. These are mostly concentrated in Outer London where poor predictions go in both directions. While it is not easy to unravel, possible root causes include: 
 
 \begin{itemize}
     \setlength\itemsep{0em}
@@ -63,9 +65,9 @@ Before further analysis, it is important to recognise where the model falls shor
     \item \textit{Incomplete target variable:} It is probable that a spatial unit with its built environment profile does have the predicted public transport trip attractiveness in reality. However, since only data from TfL-operated services are considered, omitting trip data from other operators more prevalent in Outer London and especially south of the Thames, it may show up as having an apparent overprediction. 
 \end{itemize}
 
-\begin{figure}[ht]
+\begin{figure}[hbt]
     \centering
-    \includegraphics[width=0.8\textwidth]{outliers.png}
+    \includegraphics[width=0.6\textwidth]{outliers.png}
     \captionsetup{justification=centering}
     \caption{Observations with significant overprediction and underprediction (N=576 of 16,890)\\Fine-tuned XGBoost model, Total arrivals (log)}
     \label{fig:outliers}
@@ -77,11 +79,11 @@ Nonetheless, these 'outliers' account for less than 3.5\% of the total observati
 
 After fitting the fine-tuned XGBoost model to the entire dataset, we applied interventional SHAP to obtain the SHAP values for each feature and observation. This allows us to evaluate the importance of each feature in predicting the target variable and understand the direction of the relationship between the feature and the target variable. 
 
-Figure \ref{fig:beeswarmtotal} shows the summary of feature importance for the target variable Total arrivals (log) in order. First, it is evident that the connectivity profile features have outsized importance with the \textit{transport route option diversity index (diversity\_transp\_opt)} on top in predicting trip attractiveness. This is consistent with the reality that people tend to alight/exit at transport-rich areas where they have multiple bus routes or rail services for onward journeys, representing the interchange behaviour. The second most important feature is the spatial lag of the target variable (i.e., mean of target variables of neighbouring), which partially corroborates its influence to the model's performance hypothesised earlier when analysing. The most important amenity POI feature is \textit{shopping POIs}, which is also consistently important across all time bands (see Figure \ref{fig:beeswarmtimeband} in Appendix), followed by \textit{banking POIs}, \textit{active leisure POIs}, \textit{medical POIs}, and \textit{restaurant POIs}.
+Figure \ref{fig:beeswarmtotal} shows the summary of feature importance for the target variable Total arrivals (log) in order. First, it is evident that the connectivity profile features have outsized importance with the \textit{transport route option diversity index (diversity\_transp\_opt)} on top in predicting trip attractiveness. This is consistent with the reality that people tend to alight/exit at transport-rich areas where they have multiple bus routes or rail services for onward journeys, representing the interchange behaviour. The second most important feature is the spatial lag of the target variable (i.e., mean of target variables of neighbouring), which partially corroborates its influence to the model's performance hypothesised earlier when analysing. The most important amenity POI feature is \textit{shopping POIs}, which is also consistently important across all time bands (see Figure \ref{fig:beeswarmtimeband} in Appendix), followed by \textit{banking POIs}, \textit{active leisure POIs}, \textit{medical POIs}, \textit{restaurant POIs}, \textit{nature POIs}, and \textit{outdoor leisure POIs}. This suggests that for the whole of Greater London, total arrivals as a proxy for trip attractiveness are driven mainly by, first and foremost, the need to interchange for onward travel and, secondly, by the availability of certain types of amenities.
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.8\textwidth]{beeswarm_log_Total.png}
+    \includegraphics[width=0.6\textwidth]{beeswarm_log_Total.png}
     \captionsetup{justification=centering}
     \caption{Summary of feature importance based on SHAP values of a sample. Red-Blue scale represents the feature value, and the x-axis represents the SHAP value, i.e., impact on final model prediction of Total arrivals (log)}
     \label{fig:beeswarmtotal}
@@ -100,21 +102,22 @@ This may seem counterintuitive at first that banking POIs are deemed more import
     \item Others
 \end{enumerate}
 
-\begin{figure}[!ht]
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.8\textwidth]{new_barclus_log_Total.png}
+    \includegraphics[width=0.6\textwidth]{new_barclus_log_Total.png}
     \captionsetup{justification=centering}
     \caption{Feature importance in predicting Total arrivals (log)\\ Features clustered by correlation and ordered by mean absolute SHAP values}
     \label{fig:barclustertotal}
 \end{figure}
 
-In summary, as it pertains to our first research question, the global feature importance analysis shows that built environment features are indeed important predictors of public transport inflow demand in London and that the XGBoost model is able to capture the complex relationships between these features and the target variable with high accuracy (>80\%). There are also opportunities to improve the prediction performance by addressing possibly omitted spatial and non-spatial features. The high importance of spatial lag feature is both an advantage and a shortcoming: While it drastically improves the model's performance overall, it penalises the model in areas where the spatial autocorrelation is low, reducing its generalisability to predicting the trip attractiveness of an area in isolation without considering its neighbours. Finally, highly correlated features should be considered in clusters when analysing importance to avoid interpreting undue importance to a single feature.
+In summary, as it pertains to our first research question, the global feature importance analysis shows that built environment features are indeed important predictors of public transport inflow demand in London and that the XGBoost model is able to capture the complex relationships between these features and the target variable with high accuracy (>80\%). There are also opportunities to improve the prediction performance by addressing possibly omitted spatial and non-spatial features. The high importance of the spatial lag feature is both an advantage and a shortcoming: While it drastically improves the model's performance overall, it penalises the model in areas where the spatial autocorrelation is low, reducing its generalisability to predicting the trip attractiveness of an area in isolation without considering its neighbours. Finally, highly correlated features should be considered in clusters when analysing importance to avoid interpreting undue importance to a single feature.
 
-\section{RQ2: Local ML explanation for spatial analytics}
+\pagebreak[4]
+\section*{RQ2: Identifying activity hotspots}
 
 One of the highlights of SHAP is its ability to provide local explanations for individual predictions. In the case of a spatial system, these local explanations provide additional insights on spatial phenomena that are not well captured in a global feature importance analysis, namely spatial heterogeneity (i.e., varying impact of the target variable across different spatial units) and spatial non-stationarity (i.e., varying impact of an input feature on the target variable across different spatial units). SHAP's additive property allows us also to decompose the prediction of a spatial unit into the sum of the SHAP values of each feature and exact the contribution of each feature to the prediction.
 
-Figure \ref{fig:localshap} shows the local SHAP values for two spatial units, Kew Gardens and Covent Garden, for a closer look. They represent two distinct localities with supposedly different amenity, transportation and trip attractiveness profiles. Kew Gardens is a relatively quiet but well-connected residential area in the public transport network, also known for its many renowned parks and gardens, while Covent Garden is a bustling commercial and entertainment district with high connectivity in the public transport network. The SHAP values for Kew Gardens show that the high importance of the spatial lag feature is due to the high number of public facilities and population in the area, which is consistent with the feature importance analysis. The SHAP values for Covent Garden show that the high importance of the shopping POIs feature is due to the high density of shopping amenities in the area, which is also consistent with the feature importance analysis.
+Figure \ref{fig:localshap} shows the local SHAP values for two spatial units, Kew Gardens and Covent Garden, for a closer look. They represent two distinct localities with supposedly different amenity, transportation and trip attractiveness profiles. Kew Gardens is a relatively quiet but well-connected residential area in the public transport network, also known for its many renowned parks and gardens, while Covent Garden is a bustling commercial and entertainment district with high connectivity in the public transport network. The local SHAP values for Kew Gardens show a higher contribution of the population density and POI classes that are associated with neighbourhood amenities (stores, clinics, etc.) to the prediction of total arrivals, while the local SHAP values for Covent Garden show a higher contribution of POI classes such as restaurants, entertainment venues, etc. This is consistent with the expected profiles of the two areas and demonstrates the ability of SHAP to provide local explanations for individual predictions. Finally, in both cases, in line with global feature importance, the transport route option index's contribution is among the top, indicating that with the station exit and bus alighting dataset at hand, the interchange behaviour is still a significant predictor regardless of where in London the spatial unit is located.
 
 \begin{figure}[!ht]
     \centering
@@ -124,9 +127,37 @@ Figure \ref{fig:localshap} shows the local SHAP values for two spatial units, Ke
     \label{fig:localshap}
 \end{figure}
 
+By mapping the local SHAP values for all spatial units in the Greater London area, we can visualise the differing impact of the input features on the target variable across the area. Figure \ref{fig:shapraw} shows the local SHAP values for two features, Outdoor leisure POIs and Entertainment leisure POIs, for the target variable Total arrivals (log). The map shows that the impact of these features on the target variable is not uniform across space, with some areas showing a positive impact (red) and others showing a negative impact (blue). Central London understandably commands the highest contributions of entertainment POIs to the prediction of trip attractiveness, but it also shows secondary areas of high impact in the outer boroughs, such as Brixton and Haringey. Outdoor leisure POIs, on the other hand, show a more dispersed impact citywide with a hotspot around Richmond. 
 
+On the temporal dimension across time bands, we can also observe the varying impact of the input features on the target variable across different time bands. Figure \ref{fig:shapweightedtimeband} depicts local SHAP values spatial distribution throughout the day normalised by the target variable (arrival by time band) to enable comparison. Entertainment POIs in Central London have the highest trip attractiveness in the Midday and especially Evening time bands. In comparison, Outdoor leisure POIs show a more consistent impact across time bands with a notable increase in the intensity of certain hotspots and coldspots in the Late time band. 
 
-\begin{figure}[!ht]
+While it is not immediately clear why this surfaces, it reveals a shortcoming in the methodology when examining the temporal effect of the feature contribution to trip attractiveness among different features. According to global feature importance for the Late time band, \textit{outdoor leisure POIs} seem to have an increased impact on the prediction contrary to the expectation that no passengers would be visiting outdoor leisure POIs after midnight. Since SHAP's goal is to ultimately approximate how a trained model makes decisions, it may overestimate the importance of some features in the absence of others that might be able to explain the variances. This also means the choice of the model training methodology and the feature selection process so far may not be a one-size-fits-all for temporal datasets, and additional features might be necessary to avoid overinflating the contribution of certain features. 
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{shaprawlocal.png}
+    \captionsetup{justification=centering}
+    \caption{Mapping local SHAP values for 2 features: Outdoor leisure POIs and Entertainment leisure POIs. Target: Total arrivals (log)}
+    \label{fig:shapraw}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{shapweightedtimeband.png}
+    \captionsetup{justification=centering}
+    \caption{Mapping local SHAP values for 2 features: Outdoor leisure POIs and Entertainment leisure POIs, weighted by number of arrivals}
+    \label{fig:shapweightedtimeband}
+\end{figure}
+
+Finally, with the availability of raw SHAP values also enables other manipulation for specific purposes. For example, with different types of weightage, we can observe the impact of the features on the target variable in a different light. Figure \ref{fig:shaprawweighted} shows the comparison of raw and weighted SHAP values for two features, Outdoor leisure POIs and Entertainment leisure POIs, for the target variable Total arrivals (log), weighted in two different ways:
+
+\begin{enumerate}
+    \setlength\itemsep{0em}
+    \item Weighted by amenity diversity index: This can add more highlights to feature hotspots in areas with many other potential contenders for trip arrivals. Under this treatment, we can see that Entertainment POIs have an even more pronounced impact in Central London and clusters of small areas with high amenity diversity. 
+    \item Weighted by transport route option diversity index: This can add more highlights to feature hotspots in areas that are not well-served by many public transport routes. Under this treatment, we can see that Outdoor POIs on the outskirts of London now have a weighted trip attractiveness, taking into consideration how not as well-connected they are.
+\end{enumerate}
+
+\begin{figure}[!hbt]
     \centering
     \includegraphics[width=\textwidth]{shaprawweighted.png}
     \captionsetup{justification=centering}
@@ -134,10 +165,4 @@ Figure \ref{fig:localshap} shows the local SHAP values for two spatial units, Ke
     \label{fig:shaprawweighted}
 \end{figure}
 
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=\textwidth]{shaprawweightedtimeband.png}
-    \captionsetup{justification=centering}
-    \caption{Hot spots\\Arrivals by time band (log)}
-    \label{fig:shaprawweightedtimeband}
-\end{figure}
+Overall, SHAP local interpretability with individual SHAP values for each spatial unit provides a more nuanced understanding of the impact of the input features on the target variable across space and, in our case, time. This is particularly useful for identifying activity hotspots in the Greater London area, as it allows us to pinpoint areas where certain features have a high impact on the prediction of trip attractiveness. Limitations exist, however, in the methodology as the comparative power of SHAP is diminished when many models predicting many target variables are involved, as they are much more adept at enabling comparison of feature importance within the same model to predict the target variable. In our discussion, we will also consider the implications of these findings on urban analytics literature and transport planning.
