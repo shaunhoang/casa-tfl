@@ -158,6 +158,10 @@ compile/main.lof
 compile/main.lot
 compile/main.toc
 compile/main.synctex.gz
+
+admin
+.vscode
+literature
 *.fdb_latexmk
 *.aux
 *.bcf
