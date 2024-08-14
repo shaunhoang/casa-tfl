@@ -1,27 +1,32 @@
+% -----DOCUMENT SETUP-----
 \documentclass[12pt]{report}
 
 \usepackage{graphicx}
-\graphicspath{{images/}}
-
-\usepackage[a4paper,width=175mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
+\usepackage[a4paper,width=175mm,top=25mm,bottom=25mm,bindingoffset=5mm]{geometry}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue]{hyperref}
 \usepackage{fancyhdr}
 \usepackage{multirow}
 \usepackage[table]{xcolor}
+\usepackage{titlesec}
+
+\graphicspath{{images/}}
 \pagestyle{fancy}
 \fancyhead{}
-
-\usepackage{titlesec}
-\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter.}{0.5em}{}
-\usepackage{geometry}
 \geometry{
     footnotesep = 0.8cm
 }
+\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter.}{0.5em}{}
+
+
+% -----BIBLIOGRAPHY-----
 
 \usepackage[style=authoryear,natbib=true]{biblatex}
 \addbibresource{dissbib.bib} 
+
+
+% -----DOCUMENT-----
 
 \begin{document}
 
