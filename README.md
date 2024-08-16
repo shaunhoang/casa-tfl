@@ -19,16 +19,16 @@ TBD
 1. **Compile:** Contains the LaTeX files and other elements needed to compile the final PDF document
 
 1. **Code:** Contains the Jupyter notebook files for Python needed to reproduce the analysis:
-    * `0_busto.ipynb`: ingests and preproceses TfL bus demand data
-    * `0_numbat.ipynb`: ingests and preproceses TfL rail demand data
-    * `1_ntwk_bus.ipynb`: builds bus network graph from raw data
-    * `1_ntwk_rail.ipynb`: builds rail network graph from raw data
-    * `1_poipop.ipynb`: ingests and preproceses POI data from OSM
-    * `2_isochrone.ipynb`: creates isochrones as spatial units of analysis using OSMNx
-    * `3_feature_agg.ipynb`: aggregates all features and target variables into one dataset for model training
-    * `4_model_selection.ipynb`: tunes and evaluates prediction model
+    * `0_busto.ipynb`: ingests and preprocesses TfL bus demand data
+    * `0_numbat.ipynb`: ingests and preprocesses TfL rail demand data
+    * `1_ntwk_bus.ipynb`: builds bus network graph from raw spatial data
+    * `1_ntwk_rail.ipynb`: builds rail network graph from raw spatial data
+    * `1_poipop.ipynb`: ingests and preproceses POI data from OSM data
+    * `2_isochrone.ipynb`: creates 15-min-walk isochrones as spatial units of analysis using OSMNx
+    * `3_feature_agg.ipynb`: aggregates all features and target variables by spatial units of analysis and creates one dataset for model training
+    * `4_model_selection.ipynb`: tunes, evaluates and selects prediction model using spatial k-fold crossvalidation
     * `5_model_training.ipynb`: trains chosen model on full dataset and analyses outliers
-    * `6_shap.ipynb`: extracts and visualises SHAP values and explores further applications of SHAP values in identifying hotspots
+    * `6_shap.ipynb`: extracts and visualises SHAP values and explores further applications of SHAP values in identifying activity hotspots
 
 
 
