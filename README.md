@@ -4,37 +4,33 @@
 
 Leveraging explainable machine learning techniques (SHAP) on a finetuned XGBoost model, we were able to predict with high accuracy ($R^2>80\%$) the total arrivals by public transport in an area in Greater London, representing its trip attractiveness, from its amenity and connectivity features extracted from open data. The use of global and local SHAP explanations on the model provides valuable insights into not only feature importance but also the spatial heterogeneity of these features, which can be used to identify urban activity centres as destination hotspots and inform urban and transport planning decisions. The methodology can be extended to other localities where mobility datasets are not available since it relies on open data sources such as OpenStreetMap and the national census. Furthermore, this study serves as a foundation for future urban mobility research that aims to establish a comprehensive understanding of the factors that influence intracity travel demand and urban activity patterns.
 
-## Code Structure
+## Highlights
+TBD
 
-* **Data:** Briefly describe the data you're using, including the source, format, and any preprocessing steps. If you're not including the data in the repository due to size or sensitivity, mention this and explain where it can be obtained.
-* **Scripts:** List the main scripts and their functions. For example:
-    * `data_preprocessing.py`: Prepares data for analysis.
-    * `model_training.py`: Trains and evaluates your model.
-    * `visualization.py`: Creates plots and charts.
-* **Models:** Explain the types of models you're using (e.g., machine learning, statistical) and any important considerations.
-* **Results:** If applicable, provide a folder for storing intermediate results or outputs.
+## Methodology
+#### Data preprocessing and feature enginnering
+<img src="compile/images/preprocessing.png" alt="preprocessing">
 
-## Requirements
+#### Model selection, training and explanation with SHAP 
+<img src="compile/images/methodology.png" alt="methodology">
 
-List the software dependencies and their versions:
+## Repo Structure
 
-* Python (3.x)
-* Libraries:
-    * NumPy
-    * Pandas
-    * Scikit-learn
-    * Matplotlib
-    * (Other libraries specific to your project)
+1. **Compile:** Contains the LaTeX files and other elements needed to compile the final PDF document
 
-## Installation
+1. **Code:** Contains the Jupyter notebook files for Python needed to reproduce the analysis:
+    * `0_busto.ipynb`: ingests and preproceses TfL bus demand data
+    * `0_numbat.ipynb`: ingests and preproceses TfL rail demand data
+    * `1_ntwk_bus.ipynb`: builds bus network graph from raw data
+    * `1_ntwk_rail.ipynb`: builds rail network graph from raw data
+    * `1_poipop.ipynb`: ingests and preproceses POI data from OSM
+    * `2_isochrone.ipynb`: creates isochrones as spatial units of analysis using OSMNx
+    * `3_feature_agg.ipynb`: aggregates all features and target variables into one dataset for model training
+    * `4_model_selection.ipynb`: tunes and evaluates prediction model
+    * `5_model_training.ipynb`: trains chosen model on full dataset and analyses outliers
+    * `6_shap.ipynb`: extracts and visualises SHAP values and explores further applications of SHAP values in identifying hotspots
 
-Provide clear instructions on how to set up the environment and run your code:
 
-1. Clone the repository: `git clone https://github.com/your-username/your-repository.git`
-2. Install dependencies: `pip install -r requirements.txt`   
 
-3. (Any other project-specific setup steps)
 
-## Usage
 
-Explain how to run the different scripts and provide examples:
