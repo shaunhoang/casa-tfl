@@ -1,10 +1,13 @@
-# Predicting Trip Attractiveness of Urban Activity Centres in Greater London using Explainable Machine Learning and Open Data
+# CASA-TFL Dissertation Project repository
+
+## Title
+Predicting Trip Attractiveness of Urban Activity Centres in Greater London using Explainable Machine Learning and Open Data
 
 ## Abstract
 
 Leveraging explainable machine learning techniques (SHAP) on a finetuned XGBoost model, we were able to predict with high accuracy ($R^2>80\%$) the total arrivals by public transport in an area in Greater London, representing its trip attractiveness, from its amenity and connectivity features extracted from open data. The use of global and local SHAP explanations on the model provides valuable insights into not only feature importance but also the spatial heterogeneity of these features, which can be used to identify urban activity centres as destination hotspots and inform urban and transport planning decisions. The methodology can be extended to other localities where mobility datasets are not available since it relies on open data sources such as OpenStreetMap and the national census. Furthermore, this study serves as a foundation for future urban mobility research that aims to establish a comprehensive understanding of the factors that influence intracity travel demand and urban activity patterns.
 
-## Highlights
+## Findings
 TBD
 
 ## Methodology
@@ -14,7 +17,7 @@ TBD
 #### Model selection, training and explanation with SHAP 
 <img src="compile/images/methodology.png" alt="methodology">
 
-## Repo Structure
+## Repository Structure
 
 1. **Compile:** Contains the LaTeX files and other elements needed to compile the final PDF document
 
