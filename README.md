@@ -1,11 +1,11 @@
 # CASA-TFL Dissertation Project repository
 
 ## Title
-Predicting Trip Attractiveness of Urban Activity Centres in Greater London using Explainable Machine Learning and Open Data
+Predicting Trip Attraction of Urban Activity Centres in Greater London using Explainable Machine Learning on Open Data
 
 ## Abstract
 
-Leveraging explainable machine learning techniques (SHAP) on a finetuned XGBoost model, we were able to predict with high accuracy ($R^2>80\%$) the total arrivals by public transport in an area in Greater London, representing its trip attractiveness, from its amenity and connectivity features extracted from open data. The use of global and local SHAP explanations on the model provides valuable insights into not only feature importance but also the spatial heterogeneity of these features, which can be used to identify urban activity centres as destination hotspots and inform urban and transport planning decisions. The methodology can be extended to other localities where mobility datasets are not available since it relies on open data sources such as OpenStreetMap and the national census. Furthermore, this study serves as a foundation for future urban mobility research that aims to establish a comprehensive understanding of the factors that influence intracity travel demand and urban activity patterns.
+Using explainable machine learning techniques (SHAP) on the predictions of an XGBoost model, we were able to use amenity and connectivity features extracted from open data of an area to predict with high accuracy ($R^2>80\%$) total arrivals by public transport in a given area in Greater London, representing the area's 'trip attractiveness'. The use of SHAP machine learning explanations further provides insights into the spatial heterogeneity of the feature importance, enabling the identification of destination hotspots for different purposes, such as urban activities or transit interchange. The methodology can be extended to analysing public transport mobility patterns in other localities since it relies on open data sources such as OpenStreetMap and the national censuses. Furthermore, it serves as a foundation to be developed and adapted to analyse trip destination hotspots from mode-agnostic mobility data to inform urban planning and policy-making decisions.
 
 ## Findings
 TBD
