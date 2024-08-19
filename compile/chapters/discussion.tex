@@ -1,4 +1,4 @@
-% 1200 words
+% 1350 words
 \section*{}
 To recapitulate our findings thus far: First, we have established that provided with open data on population, amenity points-of-interest density and diversity, and public transportation accessibility indices, we can predict the total number of arrivals by public transport to a high degree of accuracy using an XGBoost machine learning model that is fine-tuned to overcome overfitting and converge fast. Secondly, we extracted more sophisticated feature importance indications using SHAP for machine learning model explanation than originally achievable with the XGBoost model's internal tree-path structure. Thirdly, the methodology allows us to decompose each target variable (i.e., arrivals by public transport) prediction into the sum of each feature's contribution in the form of its SHAP value.in effect, by examining local SHAP values' spatial distributions, we can identify hotspots for different POI features overall and across different time bands.
 
@@ -37,8 +37,18 @@ $$A_i = \sum_{j} h_{ij}$$
     \label{fig:woodgreen}
 \end{figure}
 
+In summary, by using SHAP explanations for an XGBoost model's predictions of total arrivals in an area in Greater London based on ts amenity and connectivity features, we can uncover spatial and temporal patterns of urban activities, and identify destination hotspots for different purposes, such as activities tied to different urban amenities or transit interchange. The dissertation's findings are summarised in Figure \ref{fig:summary}.
+
+\begin{figure}[!hbt]
+    \centering
+    \includegraphics[width=\textwidth]{summary.png}
+    \captionsetup{justification=centering}
+    \caption{Summary of outputs from the methodology}
+    \label{fig:summary}
+\end{figure}
+
 \pagebreak
-It is worth acknowledging the methodology's limitations, which affect its generalisability and applicability in some instances.
+Finally, it is worth acknowledging the methodology's limitations, which affect its generalisability and applicability in some instances.
 
 \begin{itemize}
     \setlength\itemsep{0em}
@@ -49,4 +59,5 @@ It is worth acknowledging the methodology's limitations, which affect its genera
     \item \textit{Quality of open data}: More broadly, due to the reliance on open data as part of the methodology, the data quality used in the analysis is subject to the quality of the data sources. Varying degrees of quality in the open data available across different localities, especially OSM data, could lead to incorrect predictions and conclusions. 
 \end{itemize}
 
-Last but not least, the dissertation scope is limited to public transport trips and does not account for other types of urban mobility, such as cycling, walking, ridesharing, or driving, which would provide a more comprehensive understanding of the non-commute trip attractiveness of an area regardless of mode of transport, especially during time bands when public transport is less accessible such as late nights. As an extension of this shortcoming, activity hotspots identified so far may only hold true for public transit users. Future work could incorporate mode-agnostic mobility data and trip purpose inferences into a modified version of this methodology to provide a more comprehensive understanding of what draws people to a certain area in Greater London. Special care should be taken to ensure that the connectivity-related features, in this case, reflect the transport modes of interest. For example, to engineer connectivity-related features with active means of transport such as cycling, the density of cycle lanes and bike-sharing stations would be more relevant than the density of bus stops and rail stations.
+The dissertation scope is also limited to public transport trips and does not account for other types of urban mobility, such as cycling, walking, ridesharing, or driving, which would provide a more comprehensive understanding of the non-commute trip attractiveness of an area regardless of mode of transport, especially during time bands when public transport is less accessible such as late nights. As an extension of this shortcoming, activity hotspots identified so far may only hold true for public transit users. Future work could incorporate mode-agnostic mobility data and trip purpose inferences into a modified version of this methodology to provide a more comprehensive understanding of what draws people to a certain area in Greater London. Special care should be taken to ensure that the connectivity-related features, in this case, reflect the transport modes of interest. For example, to engineer connectivity-related features with active means of transport such as cycling, the density of cycle lanes and bike-sharing stations would be more relevant than the density of bus stops and rail stations.
+
