@@ -1,6 +1,6 @@
 % 2500 words
 
-\section{RQ1: Predicting attractiveness from spatial features}
+\section{RQ1: Predicting trip attractiveness from open data features}
 \subsubsection*{Prediction model evaluation and selection}
 
 As previously explained, choosing a suitable machine learning model is critical, as Machine Learning explanation techniques such as SHAP would be less insightful if the predictions produced high inaccuracies. The evaluation results in Table \ref{tab:modeleval} show that the Gradient Boosting tree-based model (XGBoost) outperforms the other models in predicting the target variable \textit{Total arrivals (log)} with an $R^2$ of 0.792. Meanwhile, the simple Linear Regression model performs more poorly in comparison due to underfitting (i.e., consistently low accuracy with training data folds), and the Multilayer Perceptron Artificial Neural Network model also performs poorly but due to overfitting (i.e., high accuracy achieved with training data folds but low accuracy with validation data folds). XGBoost also outperforms itself when predicting the pre-transformed target variable with an $R^2$ of 0.633. This shows that while XGBoost has long been popular thanks to its fast convergence and high validation accuracy, transforming the highly right-skewed target variable can further improve prediction performance. 
@@ -111,7 +111,7 @@ At this point, it is important to acknowledge the effect of correlation between 
 In summary, as it pertains to our first research question, the global feature importance analysis shows that built environment features are indeed important predictors of public transport inflow demand in London and that the XGBoost model can capture the complex relationships between these features and the target variable with high accuracy ($>80\%$). There are also opportunities to improve the prediction performance by addressing possibly omitted spatial and non-spatial features. The high importance of the spatial lag feature is both an advantage and a shortcoming: While it drastically improves the model's performance overall for Greater London, it penalises the model in areas where the spatial autocorrelation is low, reducing its generalisability to predicting the trip attractiveness of an isolated area without considering its neighbours. Finally, highly correlated features should be considered in clusters when analysing importance to avoid interpreting undue importance to a single feature.
 
 \pagebreak[4]
-\section{RQ2: Identifying local attractors and hotspots}
+\section{RQ2: Spatial distributions of different trip attractors}
 
 One of the highlights of SHAP is its ability to provide local explanations for individual predictions. When applied to a spatial system, these local explanations offer additional insights on spatial phenomena that are not well captured in a global feature importance analysis, namely spatial heterogeneity (i.e., varying impact of the target variable across different spatial units) and spatial non-stationarity (i.e., varying impact of an input feature on the target variable across different spatial units). SHAP's additive property allows us to decompose the prediction of a spatial unit into the sum of the SHAP values of each feature and exact the contribution of each feature to the prediction.
 
