@@ -85,7 +85,7 @@ From here, we can make several observations: First, the connectivity profile fea
     \centering
     \includegraphics[width=0.5\textwidth]{beeswarm_log_Total.png}
     \captionsetup{justification=centering}
-    \caption{Summary of feature importance based on SHAP values. Red-Blue scale represents the feature value, and the x-axis represents the SHAP value, i.e., impact on final model prediction of Total arrivals (log)}
+    \caption{Summary of feature importance based on SHAP values in order of importance. Red-Blue scale represents the feature value, and the x-axis represents the SHAP value, i.e., impact on final model prediction of Total arrivals (log)}
     \label{fig:beeswarmtotal}
 \end{figure}
 
@@ -104,7 +104,7 @@ At this point, it is important to acknowledge the effect of correlation between 
     \centering
     \includegraphics[width=0.5\textwidth]{new_barclus_log_Total.png}
     \captionsetup{justification=centering}
-    \caption{Feature importance in predicting Total arrivals (log)\\ Features clustered by correlation and ordered by mean absolute SHAP values}
+    \caption{Feature importance in predicting Total arrivals (log)\\Features clustered by correlation, and ordered by mean absolute SHAP values}
     \label{fig:barclustertotal}
 \end{figure}
 
@@ -121,7 +121,7 @@ Figure \ref{fig:localshap} shows the local SHAP values for two spatial units, Ke
     \centering
     \includegraphics[width=\textwidth]{localshap.png}
     \captionsetup{justification=centering}
-    \caption{Local SHAP values for 2 spatial units\\Kew Gardens and Covent Garden}
+    \caption{Local SHAP values for two example spatial units\\Kew Gardens and Covent Garden}
     \label{fig:localshap}
 \end{figure}
 
@@ -135,7 +135,7 @@ It reveals the methodology's shortcoming: According to global feature importance
     \centering
     \includegraphics[width=\textwidth]{shaprawlocal.png}
     \captionsetup{justification=centering}
-    \caption{Mapping SHAP values as hotspots for two features: Outdoor leisure POIs and Entertainment leisure POIs. Target: Total arrivals (log)}
+    \caption{Mapping SHAP values for two features: Outdoor leisure POIs and Entertainment leisure POIs to identify hotspots. Target: Total arrivals (log)}
     \label{fig:shapraw}
 \end{figure}
 
@@ -143,7 +143,7 @@ It reveals the methodology's shortcoming: According to global feature importance
     \centering
     \includegraphics[width=\textwidth]{shapweightedtimeband.png}
     \captionsetup{justification=centering}
-    \caption{Mapping SHAP values as hotspots for two features Outdoor leisure POIs and Entertainment leisure POI (weighted by number of arrivals for comparison). Target: Arrivals by time band (log)}
+    \caption{Mapping SHAP values for two features Outdoor leisure POIs and Entertainment leisure POI (weighted by number of arrivals for comparison) to identify hotspots. Target: Arrivals by time band (log)}
     \label{fig:shapweightedtimeband}
 \end{figure}
 
@@ -169,6 +169,6 @@ Overall, SHAP local interpretability with individual SHAP values for each spatia
     \centering
     \includegraphics[width=\textwidth]{resultssummary.png}
     \captionsetup{justification=centering}
-    \caption{\textit{Summary of results:} From arrival data to spatial and temporal patterns of amenity trip attractors using SHAP local explanations of machine learning model's predictions\\Left: Spatial trip attracting patterns of 6 amenity classes, Right: Temporal trip attracting patterns of 2 amenity classes: Restaurants and Entertainment venues}
+    \caption{\textit{Summary of results.} From trip arrival data, we can obtain spatial and temporal patterns of amenity trip attractors using SHAP local explanations\\Left: Spatial trip attracting patterns of 6 example amenity classes, Right: Temporal trip attracting patterns of 2 example amenity classes: Restaurants and Entertainment.}
     \label{fig:resultssummary}
 \end{figure}
